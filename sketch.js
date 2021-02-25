@@ -1,18 +1,22 @@
 let input, button, greeting;
-
 let ideaArray = [];
 let itemSelected = 0;
 
-let canvasZoom = 1.0;
-var zMin = 0.5;
-var zMax = 2.00;
-var zSensitivity = 0.001;
-
-let mX, mY;
+let vertices = [];
+let edges = [];
+let area;
+let k;
+let rC = 0.01;
+let aC = 0.1;//0.01;
+let margin = 100;
 
 function setup() {
   // create canvas
   createCanvas(windowWidth, windowHeight);
+
+  area = width * height;
+  textAlign(CENTER, CENTER);
+  addVertexAt(width / 2, height / 2);
 
   input = createInput();
   input.position(width/2, 65);
@@ -31,121 +35,99 @@ function setup() {
 }
 
 function draw() {
+  background(240);
 
-  translate(width/2,height/2);
-  scale(canvasZoom);
-
-  mX = (mouseX-width/2)/canvasZoom;
-  mY = (mouseY-height/2)/canvasZoom;
-
-  background(255);
-
-  for (let i = 0; i < ideaArray.length; i++) {
-    //ideaArray[i].move();
-    ideaArray[i].display();    
+  for (let v of vertices){
+    v.update();
+    v.reset();
   }
 
+  for (let v of vertices) {
+    v.repel();
+  }
 
-  if(ideaArray.length > 0 && ideaArray[itemSelected].touched && ideaArray[itemSelected].dragable){
-    fill(ideaArray[itemSelected].unselectedColor);
-    rectMode(CENTER);
-    stroke(0);
-    strokeWeight(4);
-    rect(mX, mY, ideaArray[itemSelected].width, ideaArray[itemSelected].height, 20);       
-    fill(0);
-    noStroke();
-    textAlign(CENTER);
-    textSize(ideaArray[itemSelected].textSize);
-    text(ideaArray[itemSelected].name, mX, mY+ideaArray[itemSelected].textSize/4);
-
+  for (let e of edges){
+    e.attract();
+  }
+    
+  // Show the vertices and edges
+  for (let e of edges) {
+     e.show();
   }
   
-
+  for (let v of vertices) {
+    v.show();
+  }
+  
 }
 
 function CreateIdea(){
- 
-  var bufIdea = new IdeaClass(String(input.value()), ideaArray.length);
-  ideaArray.push(bufIdea);
+  var txt = String(input.value());    
+  addVertexAt(width / 2, height / 2, txt);
   input.value("");
-
 }
 
-function CreateTestcase(){
-  
-  var numItems = 5;
-  ideaArray = [];
+function addVertexAt(x, y, txt){
 
-  for(var i = 0; i < numItems; i ++){
-    var bufIdea = new IdeaClass(GenerateRandomName());
-    ideaArray.push(bufIdea);
+  if(txt == null) txt = "Root";
+  // Create the new vertex at the new position.    
+  let v = new Vertex(x, y, vertices.length+ " " + txt);
+
+  // Before adding the vertex, check if there are any other
+  // vertices we should connect it to with an edge.
+  if (vertices.length > 0) {
+    // Randomly pick a number of existing vertices to connect to
+    let numToConnect = 1 + int(random(vertices.length / 3));
   }
-
-  input.value("");
+  // Finally, add the vertex to the list of vertices.
+  vertices.push(v);
+  
+  // Recalculate k because the number of vertices has changed
+  k = sqrt(area / vertices.length);
 }
 
-function GenerateRandomName(){
-	var name1 = ["abandoned","able","absolute","adorable","adventurous","academic","acceptable","acclaimed","accomplished","accurate","aching","acidic","acrobatic","active","actual","adept","admirable","admired","adolescent","adorable","adored","advanced","afraid","affectionate","aged","aggravating","aggressive","agile","agitated","agonizing","agreeable","ajar","alarmed","alarming","alert","worthy","wrathful","wretched","writhing","wrong","wry","yawning","yearly","yellow","yellowish","young","youthful","yummy","zany","zealous","zesty","zigzag","rocky"];
-	var name2 = ["people","history","way","art","world","information","map","family","government","health","system","computer","meat","year","thanks","music","person","reading","method","data","food","understanding","theory","law","bird","inevitable","invite","kiss","neat","pop","punch","quit","reply","representative","resist","rip","rub","silly","smile","spell","stretch","stupid","tear","temporary","tomorrow","wake","wrap","yesterday","Thomas","Tom","Lieuwe"];
-	var name = capFirst(name1[getRandomInt(0, name1.length + 1)]);// + ' ' + capFirst(name2[getRandomInt(0, name2.length + 1)]);
-	return name;
-}
-function capFirst(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+function addEdgeAt(child, parent, force){
 
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+  // Create a new edge connecting the two vertices.
+  edges.push(new Edge(child, parent, force));
+  child.strength += force;
+  parent.strength += force;
+  console.log("Edges: "+edges.length);
 }
-
-
 
 function mousePressed() {
-
-  for (let i = 0; i < ideaArray.length; i++) {
-    if(dist(ideaArray[i].x, ideaArray[i].y, mX, mY) < ideaArray[i].width/2){
-
-      itemSelected = i;       
-      ideaArray[itemSelected].touched = true;
+  for (let i = 0; i < vertices.length; i++) {
+    if(dist(vertices[i].pos.x, vertices[i].pos.y, mouseX, mouseY) < vertices[i].getRadius()/2){     
+      vertices[i].touched = !vertices[i].touched;
        break;
     }
   }
 }
 
-function mouseDragged() {
-  if(ideaArray.length > itemSelected){
-    if(ideaArray[itemSelected].touched && ideaArray[itemSelected].dragable){
-      //ideaArray[itemSelected].x = mouseX;
-      //ideaArray[itemSelected].y = mouseY; 
-    }
-  }
-}
+// find the touched element in the array
+const isTouched = (element) => element.touched == true;
 
 function mouseReleased(){  
+  var itemTouched = vertices.findIndex(isTouched);
 
-    if(ideaArray[itemSelected].touched){
-        ideaArray[itemSelected].touched = false;
-        ideaArray[itemSelected].x = mX;
-        ideaArray[itemSelected].y = mY;           
+  if(itemTouched != -1){
+    console.log("Touched: "+itemTouched);
+    //release the touched
+    if(vertices[itemTouched].touched){
+      vertices[itemTouched].touched = false;
+      vertices[itemTouched].pos.x = mouseX;
+      vertices[itemTouched].pos.y = mouseY;           
     }
   
-  //if released under other node, join it
-  for (let i = 0; i < ideaArray.length; i++) {
-    if(i != itemSelected && 
-      collideRectRect(ideaArray[itemSelected].x, ideaArray[itemSelected].y, ideaArray[itemSelected].width, ideaArray[itemSelected].height, 
-        ideaArray[i].x, ideaArray[i].y, ideaArray[i].width, ideaArray[i].height )      
-      ){          
-      ideaArray[itemSelected].joinParent(i);
-      break;
+    //if released under other node, join it
+    for (let i = 0; i < vertices.length; i++) {
+      if(i != itemTouched && dist(vertices[itemTouched].pos.x, vertices[itemTouched].pos.y, vertices[i].pos.x, vertices[i].pos.y) < vertices[itemTouched].getRadius()/2)
+      {          
+        var force = random(10, 100);
+        addEdgeAt(vertices[itemTouched], vertices[i], force);
+        console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+force);
+        break;
+      }
     }
   }
-
-  itemSelected = 0;
-}
-
-function mouseWheel(event) {
-  canvasZoom += zSensitivity * event.delta;
-  canvasZoom = constrain(canvasZoom, zMin, zMax);
-  //uncomment to block page scrolling
-  return false;
 }
