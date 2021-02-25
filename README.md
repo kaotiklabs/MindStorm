@@ -1,2 +1,2 @@
 # MindStorm
- online brainstorming app
+ online brainstorming app using forced directed graphs
