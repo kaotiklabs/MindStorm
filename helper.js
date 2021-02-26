@@ -21,3 +21,38 @@ function CreateTestcase(){
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
+
+  function findIndex(name){
+    var ret = -1;
+  
+    for(let i=0; i<vertices.length; i++){ 
+      if(vertices[i].txt == name){
+        ret = i;
+        break;
+      }
+    }
+  
+    return ret;
+  }
+
+  function loadSample(){
+
+    for (let r = 0; r < table.getRowCount(); r++){
+      var name = table.getString(r,0);      
+      
+      if (findIndex(name) < 0) {
+        addVertexAt(width / 2, height / 2, name);
+      }
+    }
+  
+    for (let r = 0; r < table.getRowCount(); r++){
+      var name = table.getString(r,0);
+      var partner = table.getString(r,1);
+      var value = table.getString(r,2);
+  
+      if(value > 20){
+        addEdgeAt(vertices[findIndex(name)], vertices[findIndex(partner)], value);
+      }            
+    }
+  }
+  

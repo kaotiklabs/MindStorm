@@ -16,12 +16,13 @@ class Vertex {
 
     getColor(){
         var ret;
+        noStroke();
+        
         if(this.touched) {
-            stroke(0);
-            ret = color(200, 10, 10, 150)
-        }else{
-            noStroke();
-            ret = color(10, 200, 10, 150)
+            //stroke(0);
+            ret = color(200, 10, 10)
+        }else{            
+            ret = color(10, 200, 10)
         }
         return ret;
     }

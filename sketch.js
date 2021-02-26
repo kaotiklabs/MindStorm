@@ -1,14 +1,18 @@
 let input, button, greeting;
-let ideaArray = [];
-let itemSelected = 0;
 
 let vertices = [];
 let edges = [];
 let area;
 let k;
 let rC = 0.01;
-let aC = 0.1;//0.01;
+let aC = 0.01;
 let margin = 100;
+
+let table;
+
+function preload() {
+  table = loadTable('sample/data.csv', 'csv', 'header');
+}
 
 function setup() {
   // create canvas
@@ -16,8 +20,7 @@ function setup() {
 
   area = width * height;
   textAlign(CENTER, CENTER);
-  addVertexAt(width / 2, height / 2);
-
+  
   input = createInput();
   input.position(width/2, 65);
   input.changed(CreateIdea);
@@ -31,6 +34,10 @@ function setup() {
 
   textAlign(CENTER);
   textSize(50);
+
+  //addVertexAt(width / 2, height / 2);
+
+  loadSample();
 
 }
 
@@ -68,31 +75,21 @@ function CreateIdea(){
 }
 
 function addVertexAt(x, y, txt){
-
   if(txt == null) txt = "Root";
+  
   // Create the new vertex at the new position.    
-  let v = new Vertex(x, y, vertices.length+ " " + txt);
-
-  // Before adding the vertex, check if there are any other
-  // vertices we should connect it to with an edge.
-  if (vertices.length > 0) {
-    // Randomly pick a number of existing vertices to connect to
-    let numToConnect = 1 + int(random(vertices.length / 3));
-  }
+  let v = new Vertex(x, y,txt);
   // Finally, add the vertex to the list of vertices.
   vertices.push(v);
-  
+
   // Recalculate k because the number of vertices has changed
   k = sqrt(area / vertices.length);
 }
 
 function addEdgeAt(child, parent, force){
-
   // Create a new edge connecting the two vertices.
   edges.push(new Edge(child, parent, force));
-  child.strength += force;
-  parent.strength += force;
-  console.log("Edges: "+edges.length);
+  //console.log("Edges: "+edges.length);
 }
 
 function mousePressed() {
@@ -111,7 +108,7 @@ function mouseReleased(){
   var itemTouched = vertices.findIndex(isTouched);
 
   if(itemTouched != -1){
-    console.log("Touched: "+itemTouched);
+    //console.log("Touched: "+itemTouched);
     //release the touched
     if(vertices[itemTouched].touched){
       vertices[itemTouched].touched = false;
@@ -123,7 +120,7 @@ function mouseReleased(){
     for (let i = 0; i < vertices.length; i++) {
       if(i != itemTouched && dist(vertices[itemTouched].pos.x, vertices[itemTouched].pos.y, vertices[i].pos.x, vertices[i].pos.y) < vertices[itemTouched].getRadius()/2)
       {          
-        var force = random(10, 100);
+        var force = parseInt(random(10, 100));
         addEdgeAt(vertices[itemTouched], vertices[i], force);
         console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+force);
         break;
