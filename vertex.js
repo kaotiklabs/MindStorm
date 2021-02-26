@@ -1,17 +1,12 @@
 class Vertex {
 
-    constructor(x, y, txt){
+    constructor(x, y, txt, strength){
       this.pos = createVector(x, y);
       this.disp = createVector(0, 0);
       this.txt = txt;
-      this.strength = 0;
+      this.strength = strength;
       this.touched = false;
       this.color = this.getColor();      
-    }
-  
-    getRadius(){
-      var radius = 50 + this.strength/10;
-      return radius;      
     }
 
     getColor(){
@@ -70,7 +65,7 @@ class Vertex {
             translate(this.pos.x, this.pos.y);
         }
         
-        circle(0, 0, this.getRadius());
+        circle(0, 0, this.strength);
         fill(0);
         textSize(24);
         text(this.txt, 0, 0);

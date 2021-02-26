@@ -8,10 +8,11 @@ let rC = 0.01;
 let aC = 0.01;
 let margin = 100;
 
-let table;
+let nodesCSV, edgesCSV;
 
 function preload() {
-  table = loadTable('sample/data.csv', 'csv', 'header');
+  nodesCSV = loadTable('sample/nodes.csv', 'csv', 'header');
+  edgesCSV = loadTable('sample/edges.csv', 'csv', 'header');
 }
 
 function setup() {
@@ -25,7 +26,7 @@ function setup() {
   input.position(width/2, 65);
   input.changed(CreateIdea);
 
-  button = createButton('test');
+  button = createButton('samples');
   button.position(input.x + input.width, 65);
   button.mousePressed(CreateTestcase);
 
@@ -74,11 +75,11 @@ function CreateIdea(){
   input.value("");
 }
 
-function addVertexAt(x, y, txt){
+function addVertexAt(x, y, txt, strength){
   if(txt == null) txt = "Root";
   
   // Create the new vertex at the new position.    
-  let v = new Vertex(x, y,txt);
+  let v = new Vertex(x, y, txt, strength);
   // Finally, add the vertex to the list of vertices.
   vertices.push(v);
 
@@ -94,7 +95,7 @@ function addEdgeAt(child, parent, force){
 
 function mousePressed() {
   for (let i = 0; i < vertices.length; i++) {
-    if(dist(vertices[i].pos.x, vertices[i].pos.y, mouseX, mouseY) < vertices[i].getRadius()/2){     
+    if(dist(vertices[i].pos.x, vertices[i].pos.y, mouseX, mouseY) < vertices[i].strength/2){     
       vertices[i].touched = !vertices[i].touched;
        break;
     }
@@ -118,9 +119,9 @@ function mouseReleased(){
   
     //if released under other node, join it
     for (let i = 0; i < vertices.length; i++) {
-      if(i != itemTouched && dist(vertices[itemTouched].pos.x, vertices[itemTouched].pos.y, vertices[i].pos.x, vertices[i].pos.y) < vertices[itemTouched].getRadius()/2)
+      if(i != itemTouched && dist(vertices[itemTouched].pos.x, vertices[itemTouched].pos.y, vertices[i].pos.x, vertices[i].pos.y) < vertices[itemTouched].strength/2)
       {          
-        var force = parseInt(random(10, 100));
+        var force = 50;
         addEdgeAt(vertices[itemTouched], vertices[i], force);
         console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+force);
         break;

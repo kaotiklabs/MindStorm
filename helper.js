@@ -4,7 +4,7 @@ function CreateTestcase(){
     ideaArray = [];
   
     for(var i = 0; i < numItems; i ++){
-      addVertexAt(random(width / 2), random(height / 2), GenerateRandomName());
+      addVertexAt(random(width / 2), random(height / 2), GenerateRandomName(), 50);
     }
     input.value("");
   }
@@ -36,22 +36,23 @@ function CreateTestcase(){
   }
 
   function loadSample(){
-
-    for (let r = 0; r < table.getRowCount(); r++){
-      var name = table.getString(r,0);      
+    
+    for (let r = 0; r < nodesCSV.getRowCount(); r++){
+      var name = nodesCSV.getString(r,0);    
+      var strength = parseInt(nodesCSV.getString(r,1));    
       
       if (findIndex(name) < 0) {
-        addVertexAt(width / 2, height / 2, name);
+        addVertexAt(width / 2, height / 2, name, strength);
       }
     }
   
-    for (let r = 0; r < table.getRowCount(); r++){
-      var name = table.getString(r,0);
-      var partner = table.getString(r,1);
-      var value = table.getString(r,2);
+    for (let r = 0; r < edgesCSV.getRowCount(); r++){
+      var name = edgesCSV.getString(r,0);
+      var partner = edgesCSV.getString(r,1);
+      var force = edgesCSV.getString(r,2);
   
-      if(value > 20){
-        addEdgeAt(vertices[findIndex(name)], vertices[findIndex(partner)], value);
+      if(force > 50){
+        addEdgeAt(vertices[findIndex(name)], vertices[findIndex(partner)], force);
       }            
     }
   }

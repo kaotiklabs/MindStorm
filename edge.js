@@ -4,9 +4,6 @@ class Edge{
      this.u = u;
      this.v = v;
      this.force = force;
-
-     u.strength += force/5;
-     v.strength += force/5;
     }
     
     attract(){
@@ -35,11 +32,11 @@ class Edge{
     }
     
     show(){      
-      stroke(0);
+      stroke(100, 100);
       
       strokeWeight(1);
       textSize(20);
-      text(this.force, (this.u.pos.x+this.v.pos.x)/2, (this.u.pos.y+this.v.pos.y)/2);
+      //text(this.force, (this.u.pos.x+this.v.pos.x)/2, (this.u.pos.y+this.v.pos.y)/2);
       
       strokeWeight(this.force/10);
       line(this.u.pos.x, this.u.pos.y, this.v.pos.x, this.v.pos.y);
