@@ -15,9 +15,9 @@ class Vertex {
         
         if(this.touched) {
             //stroke(0);
-            ret = color(200, 10, 10)
+            ret = color(200, 10, 10, 150);
         }else{            
-            ret = color(10, 200, 10)
+            ret = color(10, 200, 10, 150);
         }
         return ret;
     }
@@ -65,9 +65,9 @@ class Vertex {
             translate(this.pos.x, this.pos.y);
         }
         
-        circle(0, 0, this.strength);
+        circle(0, 0, this.strength/2);
         fill(0);
-        textSize(24);
+        textSize(map(this.strength, 0, 100, 14, 20));
         text(this.txt, 0, 0);
         // //render vector force line
         // push();

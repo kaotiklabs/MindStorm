@@ -4,7 +4,7 @@ function CreateTestcase(){
     ideaArray = [];
   
     for(var i = 0; i < numItems; i ++){
-      addVertexAt(random(width / 2), random(height / 2), GenerateRandomName(), 50);
+      addVertexAt(random(width / 2), random(height / 2), GenerateRandomName(), 100);
     }
     input.value("");
   }
@@ -51,9 +51,9 @@ function CreateTestcase(){
       var partner = edgesCSV.getString(r,1);
       var force = edgesCSV.getString(r,2);
   
-      if(force > 50){
+      //if(force > 75){
         addEdgeAt(vertices[findIndex(name)], vertices[findIndex(partner)], force);
-      }            
+      //}            
     }
   }
   

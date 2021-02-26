@@ -4,6 +4,9 @@ class Edge{
      this.u = u;
      this.v = v;
      this.force = force;
+     
+     //el pes de l'enllaç depen de la força dels nodes
+     this.weight = parseInt((this.u.strength+this.v.strength)/200 * this.force);
     }
     
     attract(){
@@ -14,8 +17,8 @@ class Edge{
         d.setMag(0.01);
       }
       
-      //!intent de modificar segons força
-      var f = this.force/500;
+      //!mal calculat??
+      var f = aC *this.weight/10;      
       let m = f * pow(d.mag(), 2) / k;
       //let m = aC * pow(d.mag(), 2) / k;
       
@@ -32,13 +35,13 @@ class Edge{
     }
     
     show(){      
-      stroke(100, 100);
+      stroke(0, map(this.weight, 0, 100, 10, 255));
       
       strokeWeight(1);
       textSize(20);
-      //text(this.force, (this.u.pos.x+this.v.pos.x)/2, (this.u.pos.y+this.v.pos.y)/2);
+      //text(this.weight, (this.u.pos.x+this.v.pos.x)/2, (this.u.pos.y+this.v.pos.y)/2);
       
-      strokeWeight(this.force/10);
+      strokeWeight(map(this.weight, 0, 100, 1, 8));
       line(this.u.pos.x, this.u.pos.y, this.v.pos.x, this.v.pos.y);
     }
     

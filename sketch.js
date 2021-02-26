@@ -4,8 +4,8 @@ let vertices = [];
 let edges = [];
 let area;
 let k;
-let rC = 0.01;
-let aC = 0.01;
+let rC = 0.001; // repulsió dels nodes
+let aC = 0.01;  // atracció dels enllaços
 let margin = 100;
 
 let nodesCSV, edgesCSV;
@@ -37,7 +37,6 @@ function setup() {
   textSize(50);
 
   //addVertexAt(width / 2, height / 2);
-
   loadSample();
 
 }
@@ -71,7 +70,7 @@ function draw() {
 
 function CreateIdea(){
   var txt = String(input.value());    
-  addVertexAt(width / 2, height / 2, txt);
+  addVertexAt(width / 2, height / 2, txt, 100);
   input.value("");
 }
 
@@ -121,9 +120,8 @@ function mouseReleased(){
     for (let i = 0; i < vertices.length; i++) {
       if(i != itemTouched && dist(vertices[itemTouched].pos.x, vertices[itemTouched].pos.y, vertices[i].pos.x, vertices[i].pos.y) < vertices[itemTouched].strength/2)
       {          
-        var force = 50;
-        addEdgeAt(vertices[itemTouched], vertices[i], force);
-        console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+force);
+        addEdgeAt(vertices[itemTouched], vertices[i], 100);
+        console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+100);
         break;
       }
     }
