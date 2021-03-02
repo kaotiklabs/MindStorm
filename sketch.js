@@ -36,7 +36,7 @@ function setup() {
   textAlign(CENTER);
   textSize(50);
 
-  //addVertexAt(width / 2, height / 2);
+  //addVertexAt(width / 2, height / 2, "Root", 100);
   loadSample();
 
 }
@@ -74,9 +74,7 @@ function CreateIdea(){
   input.value("");
 }
 
-function addVertexAt(x, y, txt, strength){
-  if(txt == null) txt = "Root";
-  
+function addVertexAt(x, y, txt, strength){  
   // Create the new vertex at the new position.    
   let v = new Vertex(x, y, txt, strength);
   // Finally, add the vertex to the list of vertices.
@@ -121,7 +119,7 @@ function mouseReleased(){
       if(i != itemTouched && dist(vertices[itemTouched].pos.x, vertices[itemTouched].pos.y, vertices[i].pos.x, vertices[i].pos.y) < vertices[itemTouched].strength/2)
       {          
         addEdgeAt(vertices[itemTouched], vertices[i], 100);
-        console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+100);
+        //console.log("Join => Child: "+itemTouched+" Parent: "+i+" Force: "+100);
         break;
       }
     }
